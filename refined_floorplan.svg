@@ -1,0 +1,168 @@
+<svg viewBox="0 0 3700 2600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <!-- Definitions for Patterns and Markers -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+    </marker>
+    <style>
+      .bg-reception { fill: #eef2ff; }
+      .bg-conference { fill: #f0fdf4; }
+      .bg-workstation { fill: #f0f9ff; }
+      .bg-restroom { fill: #fef2f2; }
+      .bg-bedroom { fill: #fffbeb; }
+      .bg-cabin { fill: #faf5ff; }
+      .bg-exec-cabin { fill: #fdf4ff; }
+      .wall-ext { stroke: #1e293b; stroke-width: 50; stroke-linecap: square; fill: none; }
+      .wall-int { stroke: #1e293b; stroke-width: 20; stroke-linecap: square; fill: none; }
+      .door-cutout { fill: #ffffff; }
+      .door-arc { stroke: #f97316; stroke-width: 6; fill: none; stroke-dasharray: 8,4; }
+      .door-panel { stroke: #f97316; stroke-width: 8; stroke-linecap: round; }
+      .window-cutout { fill: #ffffff; }
+      .window-frame { stroke: #38bdf8; stroke-width: 4; fill: #e0f2fe; }
+      .window-glass { stroke: #0284c7; stroke-width: 2; }
+      .text-title { font-family: sans-serif; font-size: 32px; font-weight: bold; fill: #334155; text-anchor: middle; }
+      .text-sub { font-family: sans-serif; font-size: 24px; fill: #64748b; text-anchor: middle; }
+      .text-dim { font-family: monospace; font-size: 28px; fill: #475569; text-anchor: middle; }
+      .dim-line { stroke: #64748b; stroke-width: 4; marker-start: url(#arrow); marker-end: url(#arrow); }
+      .dim-tick { stroke: #64748b; stroke-width: 2; stroke-dasharray: 4,4; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#f8fafc" />
+
+  <!-- Room Fills (200px = 1m) -->
+  <rect x="420" y="400" width="1000" height="800" class="bg-reception" />
+  <rect x="1420" y="400" width="1100" height="800" class="bg-conference" />
+  <rect x="420" y="1200" width="900" height="700" class="bg-exec-cabin" />
+  <rect x="1320" y="1200" width="1200" height="960" class="bg-workstation" />
+  <rect x="2520" y="400" width="500" height="400" class="bg-restroom" />
+  <rect x="2520" y="800" width="800" height="700" class="bg-bedroom" />
+  <rect x="2520" y="1500" width="800" height="700" class="bg-cabin" />
+
+  <!-- Structural Walls -->
+  <!-- Exterior Perimeter (250mm -> 50px) -->
+  <rect x="420" y="400" width="2900" height="1800" class="wall-ext" />
+  
+  <!-- Interior Walls (100mm -> 20px) -->
+  <!-- Vertical dividing Reception & Conference -->
+  <line x1="1420" y1="400" x2="1420" y2="1200" class="wall-int" />
+  <!-- Horizontal dividing top rooms (Reception/Conference) and lower zone -->
+  <line x1="420" y1="1200" x2="2520" y2="1200" class="wall-int" />
+  <!-- Vertical dividing Executive Cabin and Workstation -->
+  <line x1="1320" y1="1200" x2="1320" y2="2200" class="wall-int" />
+  <!-- Horizontal dividing Executive Cabin and bottom space -->
+  <line x1="420" y1="1900" x2="1320" y2="1900" class="wall-int" />
+  <!-- Vertical dividing middle/left zone and right wings -->
+  <line x1="2520" y1="400" x2="2520" y2="2200" class="wall-int" />
+  <!-- Horizontal dividing Restroom and Bedroom -->
+  <line x1="2520" y1="800" x2="3320" y2="800" class="wall-int" />
+  <!-- Horizontal dividing Bedroom and Cabin -->
+  <line x1="2520" y1="1500" x2="3320" y2="1500" class="wall-int" />
+  <!-- Vertical closing Restroom -->
+  <line x1="3020" y1="400" x2="3020" y2="800" class="wall-int" />
+
+  <!-- Door Cutouts & Hardware -->
+  <!-- Door 1: Main Entrance to Reception (1.20m = 240px) -->
+  <rect x="390" y="620" width="60" height="240" class="door-cutout" />
+  <line x1="420" y1="620" x2="180" y2="620" class="door-panel" />
+  <path d="M 180 620 A 240 240 0 0 0 420 860" class="door-arc" />
+
+  <!-- Door 2: Reception to Conference (0.95m = 190px) -->
+  <rect x="1400" y="580" width="40" height="190" class="door-cutout" />
+  <line x1="1420" y1="580" x2="1610" y2="580" class="door-panel" />
+  <path d="M 1610 580 A 190 190 0 0 1 1420 770" class="door-arc" />
+
+  <!-- Door 3: Reception / Corridor to Executive Cabin (0.90m = 180px) -->
+  <rect x="1300" y="1320" width="40" height="180" class="door-cutout" />
+  <line x1="1320" y1="1320" x2="1140" y2="1320" class="door-panel" />
+  <path d="M 1140 1320 A 180 180 0 0 0 1320 1500" class="door-arc" />
+
+  <!-- Door 4: Conference to Corridor/WS (0.90m = 180px) -->
+  <rect x="2500" y="910" width="40" height="180" class="door-cutout" />
+  <line x1="2520" y1="910" x2="2340" y2="910" class="door-panel" />
+  <path d="M 2340 910 A 180 180 0 0 0 2520 1090" class="door-arc" />
+
+  <!-- Door 5: Workstation to Cabin (0.90m = 180px) -->
+  <rect x="2500" y="1620" width="40" height="180" class="door-cutout" />
+  <line x1="2520" y1="1620" x2="2340" y2="1620" class="door-panel" />
+  <path d="M 2340 1620 A 180 180 0 0 0 2520 1800" class="door-arc" />
+
+  <!-- Door 6: Restroom (0.75m = 150px) -->
+  <rect x="2850" y="375" width="150" height="50" class="door-cutout" />
+  <line x1="2850" y1="400" x2="2850" y2="250" class="door-panel" />
+  <path d="M 2850 250 A 150 150 0 0 1 3000 400" class="door-arc" />
+
+  <!-- Windows -->
+  <!-- W2 - Reception Top (2.00m = 400px) -->
+  <rect x="700" y="375" width="400" height="50" class="window-cutout" />
+  <rect x="700" y="380" width="400" height="40" class="window-frame" />
+  <line x1="700" y1="400" x2="1100" y2="400" class="window-glass" />
+
+  <!-- W2 - Conference Top (2.40m = 480px) -->
+  <rect x="1700" y="375" width="480" height="50" class="window-cutout" />
+  <rect x="1700" y="380" width="480" height="40" class="window-frame" />
+  <line x1="1700" y1="400" x2="2180" y2="400" class="window-glass" />
+
+  <!-- W2 - Executive Cabin Left (1.80m = 360px) -->
+  <rect x="395" y="1370" width="50" height="360" class="window-cutout" />
+  <rect x="400" y="1370" width="40" height="360" class="window-frame" />
+  <line x1="420" y1="1370" x2="420" y2="1730" class="window-glass" />
+
+  <!-- W2 - Workstation Bottom (2.40m = 480px) -->
+  <rect x="1660" y="2175" width="480" height="50" class="window-cutout" />
+  <rect x="1660" y="2180" width="480" height="40" class="window-frame" />
+  <line x1="1660" y1="2200" x2="2140" y2="2200" class="window-glass" />
+
+  <!-- W1 - Bedroom Right (1.50m = 300px) -->
+  <rect x="3295" y="1000" width="50" height="300" class="window-cutout" />
+  <rect x="3300" y="1000" width="40" height="300" class="window-frame" />
+  <line x1="3320" y1="1000" x2="3320" y2="1300" class="window-glass" />
+
+  <!-- W1 - Cabin Right (1.50m = 300px) -->
+  <rect x="3295" y="1700" width="50" height="300" class="window-cutout" />
+  <rect x="3300" y="1700" width="40" height="300" class="window-frame" />
+  <line x1="3320" y1="1700" x2="3320" y2="2000" class="window-glass" />
+
+  <!-- Room Labels -->
+  <!-- Reception -->
+  <text x="920" y="780" class="text-title">Reception</text>
+  <text x="920" y="815" class="text-sub">5.00m × 4.00m (20.00 m²)</text>
+  
+  <!-- Conference -->
+  <text x="1970" y="780" class="text-title">Conference</text>
+  <text x="1970" y="815" class="text-sub">5.50m × 4.00m (22.00 m²)</text>
+
+  <!-- Executive Cabin -->
+  <text x="870" y="1530" class="text-title">Executive Cabin</text>
+  <text x="870" y="1565" class="text-sub">4.50m × 3.50m (15.75 m²)</text>
+  
+  <!-- Workstation -->
+  <text x="1920" y="1660" class="text-title">Workstation</text>
+  <text x="1920" y="1695" class="text-sub">6.00m × 4.80m (28.80 m²)</text>
+  
+  <!-- Restroom -->
+  <text x="2770" y="590" class="text-title">Restroom</text>
+  <text x="2770" y="625" class="text-sub">2.50m × 2.00m (5.00 m²)</text>
+  
+  <!-- Bedroom -->
+  <text x="2920" y="1130" class="text-title">Bedroom</text>
+  <text x="2920" y="1165" class="text-sub">4.00m × 3.50m (14.00 m²)</text>
+  
+  <!-- Cabin -->
+  <text x="2920" y="1830" class="text-title">Cabin</text>
+  <text x="2920" y="1865" class="text-sub">4.00m × 3.50m (14.00 m²)</text>
+
+  <!-- Total Dimensions & Drafting Marks -->
+  <!-- Top Horizontal Total -->
+  <line x1="420" y1="200" x2="3320" y2="200" class="dim-line" />
+  <line x1="420" y1="180" x2="420" y2="380" class="dim-tick" />
+  <line x1="3320" y1="180" x2="3320" y2="380" class="dim-tick" />
+  <text x="1870" y="170" class="text-dim">14.50 m (TOTAL)</text>
+
+  <!-- Right Vertical Total -->
+  <line x1="3520" y1="400" x2="3520" y2="2200" class="dim-line" />
+  <line x1="3340" y1="400" x2="3540" y2="400" class="dim-tick" />
+  <line x1="3340" y1="2200" x2="3540" y2="2200" class="dim-tick" />
+  <text x="3550" y="1300" class="text-dim" transform="rotate(-90, 3550, 1300)">9.00 m (TOTAL)</text>
+</svg>

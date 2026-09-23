@@ -1,0 +1,962 @@
+{
+  "image_resolution": {
+    "width": 3700,
+    "height": 2600
+  },
+  "calibrated_pixels_per_meter": 199.88,
+  "structural_wall_grid": {
+    "horizontal_planes_y": [
+      99.4,
+      198.6,
+      297.9,
+      347.6,
+      374.4,
+      399.7,
+      499.4,
+      562.3,
+      598.5,
+      700.9,
+      730.2,
+      762.0,
+      799.7,
+      899.4,
+      997.3,
+      1079.1,
+      1100.9,
+      1116.8,
+      1177.9,
+      1199.7,
+      1218.1,
+      1299.4,
+      1399.7,
+      1500.6,
+      1518.1,
+      1599.7,
+      1697.9,
+      1780.7,
+      1798.6,
+      1897.9,
+      1998.6,
+      2099.4,
+      2157.9,
+      2197.4,
+      2211.3,
+      2299.4,
+      2398.5,
+      2456.5,
+      2499.7,
+      2550.2,
+      2597.5
+    ],
+    "vertical_planes_x": [
+      99.4,
+      198.6,
+      297.9,
+      347.9,
+      374.4,
+      399.7,
+      500.9,
+      599.7,
+      697.9,
+      799.7,
+      899.4,
+      999.5,
+      1099.4,
+      1198.5,
+      1300.6,
+      1397.9,
+      1419.5,
+      1499.4,
+      1598.6,
+      1699.4,
+      1799.7,
+      1899.4,
+      1997.4,
+      2099.4,
+      2198.6,
+      2299.4,
+      2398.6,
+      2479.4,
+      2500.9,
+      2520.9,
+      2598.6,
+      2699.4,
+      2799.4,
+      2899.4,
+      2997.7,
+      3099.4,
+      3198.5,
+      3297.9,
+      3324.3,
+      3348.8,
+      3398.5,
+      3497.9,
+      3599.7
+    ]
+  },
+  "rooms": [
+    {
+      "id": "room_yolo_1",
+      "room_name": "Workstation",
+      "raw_yolo_bbox": [
+        1309.2,
+        1200.4,
+        2511.1,
+        2164.4
+      ],
+      "snapped_bbox_pixels": [
+        1300.6,
+        1199.7,
+        2520.9,
+        2157.9
+      ],
+      "snapped_norm_box_1000": [
+        461,
+        352,
+        830,
+        681
+      ],
+      "pixel_width": 1220.3,
+      "pixel_height": 958.2,
+      "ocr_ground_truth_dimensions": {
+        "length_m": 6.0,
+        "width_m": 4.8
+      },
+      "ocr_ground_truth_area_m2": null,
+      "associated_ocr_text": [
+        "OFFICE Open Workstation Floor 28.80-m? (310.0 sq ft) 6.00 m * 4.80 m",
+        "D1-0.90m",
+        "wi 2.60 m LJ"
+      ]
+    },
+    {
+      "id": "room_yolo_2",
+      "room_name": "Conference",
+      "raw_yolo_bbox": [
+        1417.1,
+        397.9,
+        2517.2,
+        1203.5
+      ],
+      "snapped_bbox_pixels": [
+        1419.5,
+        399.7,
+        2520.9,
+        1199.7
+      ],
+      "snapped_norm_box_1000": [
+        154,
+        384,
+        461,
+        681
+      ],
+      "pixel_width": 1101.4,
+      "pixel_height": 800.0,
+      "ocr_ground_truth_dimensions": {
+        "length_m": 50.0,
+        "width_m": 4.0
+      },
+      "ocr_ground_truth_area_m2": null,
+      "associated_ocr_text": [
+        "Conference OFFICE Room 22.00 m? (236.8 sq ft) 5.50.m x 4,00 m",
+        "D1 0.90 mn"
+      ]
+    },
+    {
+      "id": "room_yolo_3",
+      "room_name": "Reception",
+      "raw_yolo_bbox": [
+        394.7,
+        397.7,
+        1413.4,
+        1200.1
+      ],
+      "snapped_bbox_pixels": [
+        399.7,
+        399.7,
+        1419.5,
+        1199.7
+      ],
+      "snapped_norm_box_1000": [
+        154,
+        108,
+        461,
+        384
+      ],
+      "pixel_width": 1019.8,
+      "pixel_height": 800.0,
+      "ocr_ground_truth_dimensions": {
+        "length_m": 5.0,
+        "width_m": 4.0
+      },
+      "ocr_ground_truth_area_m2": null,
+      "associated_ocr_text": [
+        "[| D1-0.95m",
+        "Reception OFFICE Lobby & 20.00 m? (215.3 sq ft) 5.00 m * 4.00 m",
+        "D1-0.90m"
+      ]
+    },
+    {
+      "id": "room_yolo_4",
+      "room_name": "Conference",
+      "raw_yolo_bbox": [
+        1418.1,
+        397.7,
+        2514.7,
+        1201.9
+      ],
+      "snapped_bbox_pixels": [
+        1419.5,
+        399.7,
+        2520.9,
+        1199.7
+      ],
+      "snapped_norm_box_1000": [
+        154,
+        384,
+        461,
+        681
+      ],
+      "pixel_width": 1101.4,
+      "pixel_height": 800.0,
+      "ocr_ground_truth_dimensions": {
+        "length_m": 50.0,
+        "width_m": 4.0
+      },
+      "ocr_ground_truth_area_m2": null,
+      "associated_ocr_text": [
+        "Conference OFFICE Room 22.00 m? (236.8 sq ft) 5.50.m x 4,00 m",
+        "D1 0.90 mn"
+      ]
+    },
+    {
+      "id": "room_yolo_5",
+      "room_name": "Restroom",
+      "raw_yolo_bbox": [
+        2518.6,
+        397.9,
+        3007.0,
+        802.5
+      ],
+      "snapped_bbox_pixels": [
+        2520.9,
+        399.7,
+        2997.7,
+        799.7
+      ],
+      "snapped_norm_box_1000": [
+        154,
+        681,
+        308,
+        810
+      ],
+      "pixel_width": 476.8,
+      "pixel_height": 400.0,
+      "ocr_ground_truth_dimensions": {
+        "length_m": 50.0,
+        "width_m": 2.0
+      },
+      "ocr_ground_truth_area_m2": null,
+      "associated_ocr_text": [
+        "BATHROOM Restroom 5.00 m? ft) 2.50.m x 2,00 m"
+      ]
+    },
+    {
+      "id": "room_yolo_6",
+      "room_name": "Bedroom",
+      "raw_yolo_bbox": [
+        2517.8,
+        801.5,
+        3305.5,
+        1489.4
+      ],
+      "snapped_bbox_pixels": [
+        2520.9,
+        799.7,
+        3297.9,
+        1500.6
+      ],
+      "snapped_norm_box_1000": [
+        308,
+        681,
+        577,
+        891
+      ],
+      "pixel_width": 777.0,
+      "pixel_height": 700.9,
+      "ocr_ground_truth_dimensions": null,
+      "ocr_ground_truth_area_m2": null,
+      "associated_ocr_text": [
+        "BEDROOM Bedroom 6 14.00 m? (150.7 sq ft) 100m *"
+      ]
+    },
+    {
+      "id": "room_yolo_7",
+      "room_name": "Cabin",
+      "raw_yolo_bbox": [
+        2517.9,
+        1500.1,
+        3301.6,
+        2202.9
+      ],
+      "snapped_bbox_pixels": [
+        2520.9,
+        1500.6,
+        3297.9,
+        2197.4
+      ],
+      "snapped_norm_box_1000": [
+        577,
+        681,
+        845,
+        891
+      ],
+      "pixel_width": 777.0,
+      "pixel_height": 696.8,
+      "ocr_ground_truth_dimensions": {
+        "length_m": 400.0,
+        "width_m": 3.5
+      },
+      "ocr_ground_truth_area_m2": null,
+      "associated_ocr_text": [
+        "wi 2.60 m LJ",
+        "Office OFFICE Cabin 7 14.00 m? (150.7 sq ft) 400m * 3.50 m"
+      ]
+    },
+    {
+      "id": "room_yolo_8",
+      "room_name": "Cabin",
+      "raw_yolo_bbox": [
+        2517.1,
+        1500.4,
+        3302.6,
+        2202.6
+      ],
+      "snapped_bbox_pixels": [
+        2520.9,
+        1500.6,
+        3297.9,
+        2197.4
+      ],
+      "snapped_norm_box_1000": [
+        577,
+        681,
+        845,
+        891
+      ],
+      "pixel_width": 777.0,
+      "pixel_height": 696.8,
+      "ocr_ground_truth_dimensions": {
+        "length_m": 400.0,
+        "width_m": 3.5
+      },
+      "ocr_ground_truth_area_m2": null,
+      "associated_ocr_text": [
+        "wi 2.60 m LJ",
+        "Office OFFICE Cabin 7 14.00 m? (150.7 sq ft) 400m * 3.50 m"
+      ]
+    },
+    {
+      "id": "room_yolo_9",
+      "room_name": "Reception",
+      "raw_yolo_bbox": [
+        391.7,
+        397.7,
+        1413.5,
+        1196.6
+      ],
+      "snapped_bbox_pixels": [
+        399.7,
+        399.7,
+        1419.5,
+        1199.7
+      ],
+      "snapped_norm_box_1000": [
+        154,
+        108,
+        461,
+        384
+      ],
+      "pixel_width": 1019.8,
+      "pixel_height": 800.0,
+      "ocr_ground_truth_dimensions": {
+        "length_m": 5.0,
+        "width_m": 4.0
+      },
+      "ocr_ground_truth_area_m2": null,
+      "associated_ocr_text": [
+        "[| D1-0.95m",
+        "Reception OFFICE Lobby & 20.00 m? (215.3 sq ft) 5.00 m * 4.00 m",
+        "D1-0.90m"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "door_yolo_1",
+      "bbox_pixels": [
+        1316.2,
+        560.2,
+        1421.8,
+        750.2
+      ],
+      "center": [
+        1369.0,
+        655.2
+      ],
+      "connecting_spaces": [
+        "Reception",
+        "Reception"
+      ]
+    },
+    {
+      "id": "door_yolo_2",
+      "bbox_pixels": [
+        2329.3,
+        885.7,
+        2449.7,
+        991.9
+      ],
+      "center": [
+        2389.5,
+        938.8
+      ],
+      "connecting_spaces": [
+        "Conference",
+        "Conference"
+      ]
+    },
+    {
+      "id": "door_yolo_3",
+      "bbox_pixels": [
+        1272.9,
+        560.2,
+        1423.4,
+        746.5
+      ],
+      "center": [
+        1348.2,
+        653.4
+      ],
+      "connecting_spaces": [
+        "Reception",
+        "Reception"
+      ]
+    },
+    {
+      "id": "door_yolo_4",
+      "bbox_pixels": [
+        354.8,
+        558.1,
+        635.2,
+        733.8
+      ],
+      "center": [
+        495.0,
+        646.0
+      ],
+      "connecting_spaces": [
+        "Reception",
+        "Reception"
+      ]
+    },
+    {
+      "id": "door_yolo_5",
+      "bbox_pixels": [
+        1216.3,
+        559.5,
+        1425.6,
+        736.4
+      ],
+      "center": [
+        1320.9,
+        648.0
+      ],
+      "connecting_spaces": [
+        "Reception",
+        "Reception"
+      ]
+    },
+    {
+      "id": "door_yolo_6",
+      "bbox_pixels": [
+        2329.1,
+        1588.5,
+        2448.8,
+        1688.4
+      ],
+      "center": [
+        2388.9,
+        1638.5
+      ],
+      "connecting_spaces": [
+        "Workstation"
+      ]
+    }
+  ],
+  "windows": [
+    {
+      "bbox_pixels": [
+        1663.2,
+        2161.4,
+        2136.6,
+        2211.2
+      ],
+      "norm_box_1000": [
+        831,
+        450,
+        850,
+        577
+      ],
+      "confidence": 0.934,
+      "raw_class": "window",
+      "id": "window_yolo_1",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        1699.5,
+        351.1,
+        2176.0,
+        397.2
+      ],
+      "norm_box_1000": [
+        135,
+        459,
+        153,
+        588
+      ],
+      "confidence": 0.925,
+      "raw_class": "window",
+      "id": "window_yolo_2",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        701.5,
+        350.8,
+        1100.0,
+        396.3
+      ],
+      "norm_box_1000": [
+        135,
+        190,
+        152,
+        297
+      ],
+      "confidence": 0.913,
+      "raw_class": "window",
+      "id": "window_yolo_3",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        3299.8,
+        1000.3,
+        3350.2,
+        1295.3
+      ],
+      "norm_box_1000": [
+        385,
+        892,
+        498,
+        905
+      ],
+      "confidence": 0.908,
+      "raw_class": "window",
+      "id": "window_yolo_4",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        3299.4,
+        1699.9,
+        3350.2,
+        1985.5
+      ],
+      "norm_box_1000": [
+        654,
+        892,
+        764,
+        905
+      ],
+      "confidence": 0.898,
+      "raw_class": "window",
+      "id": "window_yolo_5",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        350.2,
+        1399.0,
+        396.6,
+        1770.5
+      ],
+      "norm_box_1000": [
+        538,
+        95,
+        681,
+        107
+      ],
+      "confidence": 0.88,
+      "raw_class": "window",
+      "id": "window_yolo_6",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        349.9,
+        1599.7,
+        399.5,
+        1759.9
+      ],
+      "norm_box_1000": [
+        615,
+        95,
+        677,
+        108
+      ],
+      "confidence": 0.879,
+      "raw_class": "window",
+      "id": "window_yolo_7",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        2496.6,
+        1781.9,
+        2522.3,
+        2020.2
+      ],
+      "norm_box_1000": [
+        685,
+        675,
+        777,
+        682
+      ],
+      "confidence": 0.854,
+      "raw_class": "window",
+      "id": "window_yolo_8",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        524.0,
+        1199.1,
+        697.9,
+        1220.5
+      ],
+      "norm_box_1000": [
+        461,
+        142,
+        469,
+        189
+      ],
+      "confidence": 0.818,
+      "raw_class": "window",
+      "id": "window_yolo_9",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        3298.3,
+        1147.8,
+        3349.5,
+        1278.3
+      ],
+      "norm_box_1000": [
+        441,
+        891,
+        492,
+        905
+      ],
+      "confidence": 0.809,
+      "raw_class": "window",
+      "id": "window_yolo_10",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        2495.1,
+        1028.0,
+        2522.2,
+        1189.3
+      ],
+      "norm_box_1000": [
+        395,
+        674,
+        457,
+        682
+      ],
+      "confidence": 0.787,
+      "raw_class": "window",
+      "id": "window_yolo_11",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        2496.5,
+        1500.4,
+        2521.0,
+        1686.4
+      ],
+      "norm_box_1000": [
+        577,
+        675,
+        649,
+        681
+      ],
+      "confidence": 0.695,
+      "raw_class": "window",
+      "id": "window_yolo_12",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        191.4,
+        2500.0,
+        291.1,
+        2518.3
+      ],
+      "norm_box_1000": [
+        962,
+        52,
+        969,
+        79
+      ],
+      "confidence": 0.683,
+      "raw_class": "window",
+      "id": "window_yolo_13",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        2843.7,
+        348.4,
+        2991.6,
+        403.0
+      ],
+      "norm_box_1000": [
+        134,
+        769,
+        155,
+        809
+      ],
+      "confidence": 0.627,
+      "raw_class": "window",
+      "id": "window_yolo_14",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        3299.4,
+        1564.6,
+        3346.9,
+        1983.1
+      ],
+      "norm_box_1000": [
+        602,
+        892,
+        763,
+        905
+      ],
+      "confidence": 0.614,
+      "raw_class": "window",
+      "id": "window_yolo_15",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        3299.8,
+        1806.4,
+        3350.6,
+        1980.0
+      ],
+      "norm_box_1000": [
+        695,
+        892,
+        762,
+        906
+      ],
+      "confidence": 0.554,
+      "raw_class": "window",
+      "id": "window_yolo_16",
+      "type": "window"
+    },
+    {
+      "bbox_pixels": [
+        2497.2,
+        820.4,
+        2520.0,
+        1202.7
+      ],
+      "norm_box_1000": [
+        316,
+        675,
+        463,
+        681
+      ],
+      "confidence": 0.525,
+      "raw_class": "window",
+      "id": "window_yolo_17",
+      "type": "window"
+    }
+  ],
+  "component_callouts": [
+    {
+      "tag": "W2",
+      "dimension_m": 2.0,
+      "raw_text": "W2-2.00m",
+      "bbox": [
+        833,
+        305,
+        965,
+        322
+      ],
+      "center": [
+        899.0,
+        313.5
+      ]
+    },
+    {
+      "tag": "W2",
+      "dimension_m": 2.4,
+      "raw_text": "W2-2.40m",
+      "bbox": [
+        1873,
+        305,
+        2005,
+        322
+      ],
+      "center": [
+        1939.0,
+        313.5
+      ]
+    },
+    {
+      "tag": "D1",
+      "dimension_m": 0.75,
+      "raw_text": "D1-0.75 m",
+      "bbox": [
+        2853,
+        305,
+        2980,
+        345
+      ],
+      "center": [
+        2916.5,
+        325.0
+      ]
+    },
+    {
+      "tag": "D1",
+      "dimension_m": 0.95,
+      "raw_text": "[| D1-0.95m",
+      "bbox": [
+        1328,
+        600,
+        1453,
+        663
+      ],
+      "center": [
+        1390.5,
+        631.5
+      ]
+    },
+    {
+      "tag": "D1",
+      "dimension_m": 1.2,
+      "raw_text": "D1-1.20m",
+      "bbox": [
+        313,
+        671,
+        438,
+        688
+      ],
+      "center": [
+        375.5,
+        679.5
+      ]
+    },
+    {
+      "tag": "D1",
+      "dimension_m": 0.9,
+      "raw_text": "D1 0.90 mn",
+      "bbox": [
+        2428,
+        982,
+        2575,
+        1018
+      ],
+      "center": [
+        2501.5,
+        1000.0
+      ]
+    },
+    {
+      "tag": "D1",
+      "dimension_m": 0.9,
+      "raw_text": "D1-0.90m",
+      "bbox": [
+        548,
+        1135,
+        673,
+        1152
+      ],
+      "center": [
+        610.5,
+        1143.5
+      ]
+    },
+    {
+      "tag": "W2",
+      "dimension_m": 1.8,
+      "raw_text": "w2- 1.80 m",
+      "bbox": [
+        308,
+        1571,
+        440,
+        1612
+      ],
+      "center": [
+        374.0,
+        1591.5
+      ]
+    },
+    {
+      "tag": "D1",
+      "dimension_m": 0.9,
+      "raw_text": "D1-0.90m",
+      "bbox": [
+        2428,
+        1701,
+        2553,
+        1718
+      ],
+      "center": [
+        2490.5,
+        1709.5
+      ]
+    },
+    {
+      "tag": "W2",
+      "dimension_m": 2.4,
+      "raw_text": "W2-2.40m",
+      "bbox": [
+        1833,
+        2241,
+        1965,
+        2258
+      ],
+      "center": [
+        1899.0,
+        2249.5
+      ]
+    }
+  ],
+  "blueprint_notes": [
+    "14.50 m (TOTAL)",
+    "OVERALL: 14.50 m x 9.00 m - WALLS: EXT 250mm / INT 100mm CARPET: 119.55 m?- ROOMS: 7 - SCALE 1:50",
+    "SCALE 1:50 - im = 100 UNITS"
+  ]
+}
