@@ -333,6 +333,7 @@ notebook = {
             "metadata": {},
             "outputs": [],
             "source": [
+                "import torch\n",
                 "from ultralytics import YOLO\n",
                 "import shutil\n",
                 "from pathlib import Path\n",
