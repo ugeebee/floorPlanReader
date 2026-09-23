@@ -1,0 +1,28 @@
+# Virtual Environments
+.venv/
+venv/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# IDE & Editor
+.vscode/
+.idea/
+
+# Testing & Logs
+.pytest_cache/
+*.log
+
+# Checkpoints & Large Data
+data/
+output/
+*.pt
+*.bin
+*.safetensors
+lora_adapter/
