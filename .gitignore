@@ -27,3 +27,4 @@ output/
 *.safetensors
 lora_adapter/
 runs/
+*.zip
