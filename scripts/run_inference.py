@@ -5,8 +5,11 @@ import json
 import sys
 from pathlib import Path
 
+from floorplan_reader import HybridFloorPlanAnalyzer
 from floorplan_reader.inference.predictor import FloorPlanPredictor
+from floorplan_reader.segmentation.yolo_segmenter import YoloFloorPlanSegmenter
 from floorplan_reader.visualization.visualizer import visualize_floorplan
+from floorplan_reader.visualization.segmentation_visualizer import draw_styled_segmentation_overlay
 
 
 def parse_args():
@@ -18,16 +21,29 @@ def parse_args():
         help="Path to floor plan drawing (.jpg, .png, or .svg).",
     )
     parser.add_argument(
+        "--method",
+        type=str,
+        choices=["segmentation", "yolo", "hybrid", "vlm"],
+        default="segmentation",
+        help="Detection method: 'segmentation' (YOLO instance segmentation + dimensions, default), 'hybrid', or 'vlm'.",
+    )
+    parser.add_argument(
+        "--weights_path",
+        type=str,
+        default=None,
+        help="Path to trained YOLO segmentation model weights .pt (optional).",
+    )
+    parser.add_argument(
         "--lora_path",
         type=str,
         default=None,
-        help="Path to fine-tuned LoRA weights directory.",
+        help="Path to fine-tuned LoRA weights directory (for --method vlm).",
     )
     parser.add_argument(
         "--model_id",
         type=str,
         default="Qwen/Qwen3-VL-8B-Instruct",
-        help="Base HuggingFace model ID.",
+        help="Base HuggingFace model ID (for --method vlm).",
     )
     parser.add_argument(
         "--output_json",
@@ -50,7 +66,7 @@ def parse_args():
     parser.add_argument(
         "--mock",
         action="store_true",
-        help="Run offline mock demonstration without requiring GPU/weights.",
+        help="Run offline mock demonstration without requiring GPU/weights (for --method vlm).",
     )
     return parser.parse_args()
 
@@ -62,47 +78,53 @@ def main():
         print(f"Error: Input file not found: {input_path}")
         sys.exit(1)
 
-    print(f"Processing floor plan: {input_path} (Format: {input_path.suffix})...")
+    print(f"Processing floor plan: {input_path} (Format: {input_path.suffix}, Method: {args.method})...")
 
-    if args.mock or (not args.lora_path and not args.mock):
-        if not args.mock:
-            print("Note: No --lora_path specified. Defaulting to mock demo mode.")
-
-        # Create demo mock prediction
-        demo_json = json.dumps({
-            "rooms": [
-                {"id": "room_1", "name": "bedroom", "box_2d": [100, 80, 480, 480], "detected_label_text": "BEDROOM 4.0m x 3.8m"},
-                {"id": "room_2", "name": "kitchen", "box_2d": [100, 500, 450, 900], "detected_label_text": "KITCHEN 3.5m x 4.0m"},
-                {"id": "room_3", "name": "living_room", "box_2d": [500, 80, 900, 550], "detected_label_text": "LIVING ROOM 4.2m x 4.7m"},
-                {"id": "room_4", "name": "bathroom", "box_2d": [500, 570, 900, 900], "detected_label_text": "BATHROOM 2.2m x 3.3m"},
-            ],
-            "doors": [
-                {"id": "door_1", "type": "single_swing", "box_2d": [470, 200, 510, 250]},
-                {"id": "door_2", "type": "single_swing", "box_2d": [470, 650, 510, 700]},
-            ],
-            "windows": [
-                {"id": "win_1", "type": "standard", "box_2d": [90, 200, 105, 360], "wall_side": "north"},
-                {"id": "win_2", "type": "standard", "box_2d": [90, 600, 105, 780], "wall_side": "north"},
-                {"id": "win_3", "type": "standard", "box_2d": [895, 200, 905, 360], "wall_side": "south"},
-            ],
-        })
-
-        predictor = FloorPlanPredictor(
-            mock_generator_fn=lambda img, prompt: f"```json\n{demo_json}\n```"
-        )
+    if args.method in ("segmentation", "yolo"):
+        segmenter = YoloFloorPlanSegmenter(weights_path=args.weights_path)
+        analysis = segmenter.analyze(input_path, pixels_per_meter=args.pixels_per_meter)
+    elif args.method == "hybrid":
+        analyzer = HybridFloorPlanAnalyzer()
+        analysis = analyzer.analyze(input_path, pixels_per_meter=args.pixels_per_meter)
     else:
-        print(f"Loading model {args.model_id} with LoRA adapter from {args.lora_path}...")
-        predictor = FloorPlanPredictor.from_pretrained_lora(
-            base_model_id=args.model_id,
-            lora_weights_path=args.lora_path,
-            load_in_4bit=True,
-        )
+        # VLM method
+        if args.mock or (not args.lora_path and not args.mock):
+            if not args.mock:
+                print("Note: No --lora_path specified. Defaulting to mock demo mode.")
 
-    # Run Prediction
-    analysis = predictor.predict(
-        source=input_path,
-        pixels_per_meter=args.pixels_per_meter,
-    )
+            demo_json = json.dumps({
+                "rooms": [
+                    {"id": "room_1", "name": "bedroom", "box_2d": [100, 80, 480, 480], "detected_label_text": "BEDROOM 4.0m x 3.8m"},
+                    {"id": "room_2", "name": "kitchen", "box_2d": [100, 500, 450, 900], "detected_label_text": "KITCHEN 3.5m x 4.0m"},
+                    {"id": "room_3", "name": "living_room", "box_2d": [500, 80, 900, 550], "detected_label_text": "LIVING ROOM 4.2m x 4.7m"},
+                    {"id": "room_4", "name": "bathroom", "box_2d": [500, 570, 900, 900], "detected_label_text": "BATHROOM 2.2m x 3.3m"},
+                ],
+                "doors": [
+                    {"id": "door_1", "type": "single_swing", "box_2d": [470, 200, 510, 250]},
+                    {"id": "door_2", "type": "single_swing", "box_2d": [470, 650, 510, 700]},
+                ],
+                "windows": [
+                    {"id": "win_1", "type": "standard", "box_2d": [90, 200, 105, 360], "wall_side": "north"},
+                    {"id": "win_2", "type": "standard", "box_2d": [90, 600, 105, 780], "wall_side": "north"},
+                    {"id": "win_3", "type": "standard", "box_2d": [895, 200, 905, 360], "wall_side": "south"},
+                ],
+            })
+
+            predictor = FloorPlanPredictor(
+                mock_generator_fn=lambda img, prompt: f"```json\n{demo_json}\n```"
+            )
+        else:
+            print(f"Loading model {args.model_id} with LoRA adapter from {args.lora_path}...")
+            predictor = FloorPlanPredictor.from_pretrained_lora(
+                base_model_id=args.model_id,
+                lora_weights_path=args.lora_path,
+                load_in_4bit=True,
+            )
+
+        analysis = predictor.predict(
+            source=input_path,
+            pixels_per_meter=args.pixels_per_meter,
+        )
 
     # Display Summary
     print("\n--- Structured Floor Plan Analysis ---")
@@ -115,7 +137,8 @@ def main():
     for r in analysis.rooms:
         dim_info = f"Norm Dim: {r.norm_length:.0f}x{r.norm_width:.0f} ({r.area_percentage:.1f}% area)"
         if r.real_length and r.real_width:
-            dim_info += f" | Real: {r.real_length}x{r.real_width}{r.unit}"
+            area_m2 = round(r.real_length * r.real_width, 2)
+            dim_info += f" | Real: {r.real_length:.2f}m x {r.real_width:.2f}m ({area_m2} sq m)"
         print(f" - [{r.id}] {r.name.upper()}: Box {r.box_2d.to_list()} | {dim_info}")
 
     print("\nDoors Detected:")
@@ -135,7 +158,7 @@ def main():
 
     # Generate and Save Visual Overlay
     output_viz_path = args.output_viz or str(input_path.with_name(f"{input_path.stem}_overlay.png"))
-    visualize_floorplan(input_path, analysis, output_path=output_viz_path)
+    draw_styled_segmentation_overlay(input_path, analysis, output_path=output_viz_path)
     print(f"Visual overlay saved to:    {output_viz_path}")
 
 

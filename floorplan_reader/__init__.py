@@ -8,6 +8,7 @@ from floorplan_reader.schema import (
     FloorPlanMetadata,
     FloorPlanAnalysis,
 )
+from floorplan_reader.detection.hybrid_analyzer import HybridFloorPlanAnalyzer
 
 __version__ = "0.1.0"
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     "WindowElement",
     "FloorPlanMetadata",
     "FloorPlanAnalysis",
+    "HybridFloorPlanAnalyzer",
 ]

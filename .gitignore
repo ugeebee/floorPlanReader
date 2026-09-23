@@ -26,3 +26,4 @@ output/
 *.bin
 *.safetensors
 lora_adapter/
+runs/
