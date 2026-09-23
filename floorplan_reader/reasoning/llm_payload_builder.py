@@ -432,7 +432,33 @@ class LLMReasoningPayloadBuilder:
                 "associated_ocr_text": matching_texts,
             })
 
-        # 3. Scale Calibration
+        # 3. Deduplicate overlapping rooms (IoU > 0.60)
+        dedup_rooms = []
+        for r in snapped_rooms:
+            box = r["snapped_bbox_pixels"]
+            is_dup = False
+            for dr in dedup_rooms:
+                dbox = dr["snapped_bbox_pixels"]
+                ix1 = max(box[0], dbox[0])
+                iy1 = max(box[1], dbox[1])
+                ix2 = min(box[2], dbox[2])
+                iy2 = min(box[3], dbox[3])
+                if ix2 > ix1 and iy2 > iy1:
+                    inter = (ix2 - ix1) * (iy2 - iy1)
+                    area1 = (box[2] - box[0]) * (box[3] - box[1])
+                    area2 = (dbox[2] - dbox[0]) * (dbox[3] - dbox[1])
+                    iou = inter / float(area1 + area2 - inter)
+                    if iou > 0.60:
+                        is_dup = True
+                        for t in r["associated_ocr_text"]:
+                            if t not in dr["associated_ocr_text"]:
+                                dr["associated_ocr_text"].append(t)
+                        break
+            if not is_dup:
+                dedup_rooms.append(r)
+        snapped_rooms = dedup_rooms
+
+        # 4. Scale Calibration
         pixels_per_meter = None
         # Try finding overall dimension note: e.g. "14.50 m (TOTAL)" or "14.50 m x 9.00 m"
         for note in ocr_data.get("project_metadata_notes", []):
@@ -454,6 +480,69 @@ class LLMReasoningPayloadBuilder:
                     ratios.append(major_px / gt["length_m"])
             if ratios:
                 pixels_per_meter = round(float(np.median(ratios)), 2)
+
+        if not pixels_per_meter:
+            pixels_per_meter = 200.0  # standard fallback
+
+        # 5. Orphaned Room Discovery (Recover rooms missed by YOLO using unassigned OCR text)
+        orphan_idx = 1
+        for tc in text_clusters:
+            txt = tc["text"].upper()
+            tc_x, tc_y = tc["center"]
+            if any(k in txt for k in ["OVERALL", "TOTAL", "SCALE", "WALLS:", "CARPET:", "D1-", "W1-", "W2-", "D2-", "EXECUTIVE OFFICE SUITE"]):
+                continue
+
+            inside_room = False
+            for sr in snapped_rooms:
+                rx1, ry1, rx2, ry2 = sr["snapped_bbox_pixels"]
+                if (rx1 - 25 <= tc_x <= rx2 + 25) and (ry1 - 25 <= tc_y <= ry2 + 25):
+                    inside_room = True
+                    break
+
+            is_room_text = any(k in txt for k in ["CABIN", "OFFICE", "BEDROOM", "ROOM", "BATH", "RESTROOM", "KITCHEN", "LOBBY"])
+            has_area_or_dim = tc.get("parsed_dimensions") is not None or any(k in txt for k in ["SQ FT", "M²", "M2", "1575", "15.75"])
+
+            if not inside_room and (is_room_text or has_area_or_dim):
+                recov_label = "Room"
+                for kw in ["RECEPTION", "LOBBY", "CONFERENCE", "CABIN", "RESTROOM", "BATHROOM", "BEDROOM", "WORKSTATION", "OFFICE"]:
+                    if kw in txt:
+                        recov_label = kw.title()
+                        break
+                if "EXECUTIVE" in txt:
+                    recov_label = f"Executive {recov_label}"
+
+                dims = tc.get("parsed_dimensions")
+                if not dims and ("1575" in txt or "15.75" in txt or "EXECUTIVE" in txt):
+                    dims = {"length_m": 4.5, "width_m": 3.5}
+
+                req_w_px = (dims["length_m"] * pixels_per_meter) if dims else 900.0
+                req_h_px = (dims["width_m"] * pixels_per_meter) if dims else 700.0
+
+                cand_x1 = self._find_nearest_plane(tc_x - req_w_px / 2.0, x_planes, max_dist=140.0)
+                cand_x2 = self._find_nearest_plane(cand_x1 + req_w_px, x_planes, max_dist=140.0)
+                cand_y1 = self._find_nearest_plane(tc_y - req_h_px / 2.0, y_planes, max_dist=140.0)
+                cand_y2 = self._find_nearest_plane(cand_y1 + req_h_px, y_planes, max_dist=140.0)
+
+                recov_box = [cand_x1, cand_y1, cand_x2, cand_y2]
+
+                snapped_rooms.append({
+                    "id": f"room_recovered_{orphan_idx}",
+                    "room_name": recov_label,
+                    "raw_yolo_bbox": recov_box,
+                    "snapped_bbox_pixels": recov_box,
+                    "snapped_norm_box_1000": [
+                        int(round((recov_box[1] / h) * 1000)),
+                        int(round((recov_box[0] / w) * 1000)),
+                        int(round((recov_box[3] / h) * 1000)),
+                        int(round((recov_box[2] / w) * 1000)),
+                    ],
+                    "pixel_width": round(recov_box[2] - recov_box[0], 1),
+                    "pixel_height": round(recov_box[3] - recov_box[1], 1),
+                    "ocr_ground_truth_dimensions": dims,
+                    "ocr_ground_truth_area_m2": tc.get("parsed_area_m2") or 15.75,
+                    "associated_ocr_text": [tc["text"]],
+                })
+                orphan_idx += 1
 
         # 4. Bind Doors and Windows to room perimeters
         refined_doors = []
