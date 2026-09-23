@@ -43,6 +43,18 @@ CUBICASA_ROOM_MAPPING = {
 }
 
 
+CUBICASA_ID_MAPPING = {
+    1: "bathroom",
+    2: "bedroom",
+    3: "door",
+    4: "kitchen",
+    5: "room",
+    6: "stairs",
+    7: "wall",
+    8: "window",
+}
+
+
 class CubiCasaParser:
     """Parses CubiCasa5k samples into Qwen-VL multimodal chat format."""
 
@@ -52,7 +64,7 @@ class CubiCasaParser:
     def parse_coco_sample(
         self,
         image_path_or_pil: Union[str, Path, Image.Image],
-        annotations: List[Dict[str, Any]],
+        annotations: Union[List[Dict[str, Any]], Dict[str, List[Any]]],
         img_width: int,
         img_height: int,
         sample_id: str = "cubicasa_sample",
@@ -62,7 +74,7 @@ class CubiCasaParser:
 
         Args:
             image_path_or_pil: Floor plan image.
-            annotations: COCO annotations list, each having 'bbox': [x, y, w, h] and 'category_name' or 'label'.
+            annotations: COCO annotations (list of dicts, or Hugging Face columnar dict of lists).
             img_width: Image width in pixels.
             img_height: Image height in pixels.
             sample_id: Unique identifier for the sample.
@@ -85,6 +97,22 @@ class CubiCasaParser:
                 image_path_or_pil.convert("RGB").save(target_p)
             image_save_path = str(target_p.resolve())
 
+        # Normalize annotations if passed as Hugging Face columnar dict of lists
+        ann_list: List[Dict[str, Any]] = []
+        if isinstance(annotations, dict):
+            bboxes = annotations.get("bbox", [])
+            cat_ids = annotations.get("category_id", [])
+            cat_names = annotations.get("category_name", [])
+            for i in range(len(bboxes)):
+                entry: Dict[str, Any] = {"bbox": bboxes[i]}
+                if i < len(cat_ids):
+                    entry["category_id"] = cat_ids[i]
+                if i < len(cat_names):
+                    entry["category_name"] = cat_names[i]
+                ann_list.append(entry)
+        elif isinstance(annotations, list):
+            ann_list = annotations
+
         rooms: List[Dict[str, Any]] = []
         doors: List[Dict[str, Any]] = []
         windows: List[Dict[str, Any]] = []
@@ -93,7 +121,7 @@ class CubiCasaParser:
         door_idx = 1
         win_idx = 1
 
-        for ann in annotations:
+        for ann in ann_list:
             bbox = ann.get("bbox")  # COCO bbox: [x, y, width, height]
             if not bbox or len(bbox) != 4:
                 continue
@@ -108,8 +136,17 @@ class CubiCasaParser:
             ymax = max(0, min(1000, int(round(((y + h) / img_height) * 1000))))
             xmax = max(0, min(1000, int(round(((x + w) / img_width) * 1000))))
 
-            cat_raw = ann.get("category_name") or ann.get("label") or "room"
-            cat_lower = cat_raw.strip().lower()
+            cat_id = ann.get("category_id")
+            if cat_id is not None and cat_id in CUBICASA_ID_MAPPING:
+                cat_raw = CUBICASA_ID_MAPPING[cat_id]
+            else:
+                cat_raw = ann.get("category_name") or ann.get("label") or "room"
+
+            cat_lower = str(cat_raw).strip().lower()
+
+            # Skip walls or background elements
+            if cat_lower in ("wall", "stairs", "objects"):
+                continue
 
             box_list = [ymin, xmin, ymax, xmax]
 
