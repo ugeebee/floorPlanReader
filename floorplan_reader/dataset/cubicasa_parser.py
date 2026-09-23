@@ -208,37 +208,67 @@ class CubiCasaParser:
         doors = []
         windows = []
 
+        # Build parent map so child polygons can inherit class from parent <g class="Space Bedroom">
+        parent_map = {c: p for p in root.iter() for c in p}
+
         # CubiCasa5k SVGs group spaces under <g id="Rooms"> or class tags
         for elem in root.iter():
             tag = elem.tag.split("}")[-1] if "}" in elem.tag else elem.tag
-            class_name = elem.attrib.get("class", "")
-            elem_id = elem.attrib.get("id", "")
 
-            # If element has polygon points
-            points_str = elem.attrib.get("points")
-            if tag == "polygon" and points_str:
-                pts = [
-                    [float(coord) for coord in p.split(",")]
-                    for p in points_str.strip().split()
-                    if "," in p
-                ]
-                if pts:
-                    xs = [p[0] for p in pts]
-                    ys = [p[1] for p in pts]
-                    xmin = max(0, min(1000, int(round((min(xs) / svg_w) * 1000))))
-                    ymin = max(0, min(1000, int(round((min(ys) / svg_h) * 1000))))
-                    xmax = max(0, min(1000, int(round((max(xs) / svg_w) * 1000))))
-                    ymax = max(0, min(1000, int(round((max(ys) / svg_h) * 1000))))
+            # Handle polygon, polyline, or rect elements
+            pts: List[List[float]] = []
+            if tag in ("polygon", "polyline"):
+                points_str = elem.attrib.get("points")
+                if points_str:
+                    pts = [
+                        [float(coord) for coord in p.split(",")]
+                        for p in points_str.strip().split()
+                        if "," in p
+                    ]
+            elif tag == "rect":
+                rx = float(elem.attrib.get("x", 0))
+                ry = float(elem.attrib.get("y", 0))
+                rw = float(elem.attrib.get("width", 0))
+                rh = float(elem.attrib.get("height", 0))
+                if rw > 0 and rh > 0:
+                    pts = [[rx, ry], [rx + rw, ry], [rx + rw, ry + rh], [rx, ry + rh]]
 
-                    box = [ymin, xmin, ymax, xmax]
-                    label = class_name or elem_id or "room"
+            if pts:
+                xs = [p[0] for p in pts]
+                ys = [p[1] for p in pts]
+                xmin = max(0, min(1000, int(round((min(xs) / svg_w) * 1000))))
+                ymin = max(0, min(1000, int(round((min(ys) / svg_h) * 1000))))
+                xmax = max(0, min(1000, int(round((max(xs) / svg_w) * 1000))))
+                ymax = max(0, min(1000, int(round((max(ys) / svg_h) * 1000))))
 
-                    if "door" in label.lower():
-                        doors.append({"id": f"door_{len(doors)+1}", "type": "single_swing", "box_2d": box})
-                    elif "window" in label.lower():
-                        windows.append({"id": f"window_{len(windows)+1}", "type": "standard", "box_2d": box})
-                    else:
-                        rooms.append({"id": f"room_{len(rooms)+1}", "name": label.lower(), "box_2d": box})
+                # Skip zero-area noise
+                if (xmax - xmin) < 5 or (ymax - ymin) < 5:
+                    continue
+
+                box = [ymin, xmin, ymax, xmax]
+
+                # Trace class name from elem up parent hierarchy
+                class_name = elem.attrib.get("class", "")
+                curr = elem
+                while not class_name and curr in parent_map:
+                    curr = parent_map[curr]
+                    class_name = curr.attrib.get("class", "") or curr.attrib.get("id", "")
+
+                label = (class_name or elem.attrib.get("id") or "room").strip().lower()
+
+                # Filter out walls or structural bounds
+                if "wall" in label or "exterior" in label or "background" in label:
+                    continue
+
+                if "door" in label:
+                    doors.append({"id": f"door_{len(doors)+1}", "type": "single_swing", "box_2d": box})
+                elif "window" in label:
+                    windows.append({"id": f"window_{len(windows)+1}", "type": "standard", "box_2d": box})
+                elif "space" in label or "room" in label or any(k.lower() in label for k in CUBICASA_ROOM_MAPPING):
+                    # Clean room name (e.g. "Space Bedroom" -> "bedroom")
+                    cleaned_name = label.replace("space", "").replace("room", "").strip() or "room"
+                    cleaned_name = cleaned_name.split()[0] if cleaned_name.split() else "room"
+                    rooms.append({"id": f"room_{len(rooms)+1}", "name": cleaned_name, "box_2d": box})
 
         target_output = {
             "rooms": rooms,
@@ -251,6 +281,54 @@ class CubiCasaParser:
             target_json=target_output,
             sample_id=sample_id,
         )
+
+    def parse_cubicasa_directory(
+        self,
+        cubicasa_root: Union[str, Path],
+        max_samples: Optional[int] = None,
+        output_image_dir: Optional[Union[str, Path]] = None,
+    ) -> List[Dict[str, Any]]:
+        """Recursively scan an extracted Zenodo CubiCasa5k directory and parse all samples."""
+        root = Path(cubicasa_root)
+        svg_files = sorted(list(root.rglob("model.svg")))
+
+        samples: List[Dict[str, Any]] = []
+        for svg_f in svg_files:
+            if max_samples and len(samples) >= max_samples:
+                break
+            parent_d = svg_f.parent
+            sample_name = f"{parent_d.parent.name}_{parent_d.name}"
+
+            # Look for raster image
+            raster_img = None
+            for cand in ["F1_scaled.png", "F1_original.png", "color.png", "original.png"]:
+                p = parent_d / cand
+                if p.exists():
+                    raster_img = p
+                    break
+
+            if not raster_img:
+                from floorplan_reader.converters.svg_converter import convert_svg_to_png
+                raster_img = parent_d / "color.png"
+                if not raster_img.exists():
+                    try:
+                        convert_svg_to_png(svg_f, output_path=raster_img)
+                    except Exception:
+                        continue
+
+            try:
+                entry = self.parse_svg_model(
+                    svg_path=svg_f,
+                    raster_image_path=raster_img,
+                    sample_id=sample_name,
+                )
+                parsed_json = json.loads(entry["messages"][1]["content"][0]["text"])
+                if len(parsed_json["rooms"]) > 0:
+                    samples.append(entry)
+            except Exception as e:
+                logger.debug(f"Skipping {svg_f}: {e}")
+
+        return samples
 
     def create_conversation_entry(
         self,
